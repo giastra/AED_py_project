@@ -1,0 +1,19 @@
+body{
+    background-color: rgb(237, 232, 225);
+    color: rgb(0, 0, 0);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 20px;
+}
+
+#select{
+    display: flex;
+    flex-flow: column;
+    width: 20%;
+}
+
+main{
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+    gap: 50px;
+}

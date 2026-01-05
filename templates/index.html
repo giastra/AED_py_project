@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"> </link>
+    
+</head>
+<body>
+    <h1>Grafico</h1>
+    <main>
+
+    
+
+    <section id="select">
+    <!-- tipo de grafico -->
+    <select name="category" id="category">
+        <option value="pizza">pizza</option>
+        <option value="bar">bar</option>
+        <option value="hodBar">horizontal Bar</option>
+    </select>
+
+    <!-- x -->
+    <p>X</p>
+    <select name="x" id="x">
+        <option value="x">x</option>
+        <option value="x">x</option>
+        <option value="x">x</option>
+    </select>
+
+    <!-- y -->
+    <p>Y</p>
+    <select name="y" id="y">
+        <option value="y">y</option>
+        <option value="y">y</option>
+        <option value="y">y</option>
+    </select>
+    </section>
+    <img src= "/pathImagesteste1.jpg" width="200px">
+    </main>
+</body>
+</html>
