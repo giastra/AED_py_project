@@ -83,9 +83,7 @@
     <div class=" m-3">
       <p>X</p>
       <select name="x" id="x">
-        <option value="x">x</option>
-        <option value="x">x</option>
-        <option value="x">x</option>
+         {{x | safe}}
       </select>
     </div>
 
@@ -93,9 +91,7 @@
     <div class=" m-3">
      <p>Y</p>
      <select name="y" id="y">
-        <option value="y">y</option>
-        <option value="y">y</option>
-        <option value="y">y</option>
+        {{y | safe}}
      </select>
     </div>
     
@@ -103,6 +99,8 @@
 
     </section>-->
      
+    <img src="{{grafico | safe}}" width="450px" height="100%">
+
     </main>
 
 
