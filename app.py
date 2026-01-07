@@ -76,9 +76,11 @@ def inicio():
     global Data, header
     grafico = filmsByGenreChart(header, Data)
     y=''
+    x=''
     for a in header:
-        y+=f'<option value="y">{a}</option>'
-    return render_template("index.html", grafico=grafico,y=y)
+        y+=f'<option value="{a}">{a}</option>'
+        x+=f'<option value="{a}">{a}</option>'
+    return render_template("index.html", grafico=grafico,y=y,x=x)
 
 if __name__ == '__main__':
     app.run(debug=True)
