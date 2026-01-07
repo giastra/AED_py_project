@@ -18,20 +18,20 @@ app = Flask(__name__)
 fileName='./datasets/imdb_top_250_movies.csv'
 
 with open(fileName, newline='', encoding='utf-8') as csvfile:
-        filmsReader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        Reade = csv.reader(csvfile, delimiter=',', quotechar='"')
         global Data, header
-        header = next(filmsReader)  # Skip header
-        Data = list(filmsReader) 
+        header = next(Reade)  # Skip header
+        Data = list(Reade) 
         
 #  ----------------------------------------------------------
-print(header )
+print(header)
     
 #  ----------------------------------------------------------
 
 
 def filmsByGenreChart(header, Data):
-    genreItems = []              # LISTA de generos
-    genreCount = []              # LISTA de contador de filmes para cada genero
+    items = []              # LISTA de generos
+    Count = []              # LISTA de contador de filmes para cada genero
     
     
     indexGenre = header.index('Year')
@@ -39,24 +39,24 @@ def filmsByGenreChart(header, Data):
         genresFilm = film[indexGenre].split(', ')  # Um filme pode ter vários géneros
     
         for genre in genresFilm:    # percorre todos os generos de UM DETERMINADO FILME 
-            if genre in genreItems:
-                pos=genreItems.index(genre) 
-                genreCount[pos]+= 1
+            if genre in items:
+                pos=items.index(genre) 
+                Count[pos]+= 1
             else:
-                genreItems.append(genre)
-                genreCount.append(1)
+                items.append(genre)
+                Count.append(1)
 
-    print(genreCount)
+    print(Count)
     chart1Path = "./static/image/plot1.png"
     plt.figure()
 
     myExplode = []
-    for i in range (len(genreItems)):
+    for i in range (len(items)):
         myExplode.append(0.1)
 
-    ypoints = (genreCount)
+    ypoints = (Count)
     plt.pie(ypoints, 
-            labels=genreItems, 
+            labels=items, 
             shadow=True,
             explode = myExplode,
             autopct='%1.1f%%')   # Atributo para evidenciar valores percentuais e respetiva formatação
@@ -75,7 +75,10 @@ def filmsByGenreChart(header, Data):
 def inicio():
     global Data, header
     grafico = filmsByGenreChart(header, Data)
-    return render_template("index.html", grafico=grafico)
+    y=''
+    for a in header:
+        y+=f'<option value="y">{a}</option>'
+    return render_template("index.html", grafico=grafico,y=y)
 
 if __name__ == '__main__':
     app.run(debug=True)
