@@ -16,7 +16,6 @@ def area_pessoal():
     return render_template("area_pessoal.html")
 
 def guardar_utilizador(username, email, password): 
-    # Abre o ficheiro em modo de acrescentar (a = append) 
     f = open(ficheiro, "a", encoding="utf-8") 
     f.write(username + ";" + email + ";" + password + "\n")
     f.close()
