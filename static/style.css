@@ -1,24 +1,31 @@
 body{
-    background-color: rgb(255, 255, 255);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     padding: 20px;
-    margin: 0 !important;
 }
-
-header {
-  margin: 0 !important;
-  padding: 0 !important;
+header{
+    height: 300px;
 }
-
 #select{
     display: flex;
     flex-flow: column;
     width: 20%;
 }
-
-main{
+.card{
+    border: 5px solid black;
+    width: 400px;
+    height: 500px;
+    padding: 10px;
+    text-align: center;
+}
+#destaque{
     display: flex;
     flex-flow: row;
+    justify-content: space-evenly;
+    gap: 20px;
+    padding: 10px;
+    margin-top: 20px;
+}
+main{
     width: 100%;
     gap: 50px;
 }
