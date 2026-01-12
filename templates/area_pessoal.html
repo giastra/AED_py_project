@@ -6,6 +6,51 @@
     <title>Area Pessoal</title>
 </head>
 <body>
+    <h2 class="mb-4 mt-3 ms-2">Grafico</h2>
     
+
+    <!-- seleção de info do grafico -->
+      <!-- <select name="arcaive" id="arcaive">
+        <option value="fs">Fantasy series</option>
+        <option value="IMDB250">IMDB top 250</option>
+        <option value="IMDBVG">IMDB Video Games</option>
+      </select> -->
+    
+    <section id="select">
+    <form id="graficoForm" method="POST">
+    
+      <!-- tipo de grafico -->
+      tipo de grafico
+    <div class="m-3">
+     <select name="category" id="category">
+        <option value="pizza">pizza</option>
+        <option value="bar">bar</option>
+        <option value="hodBar">horizontal Bar</option>
+     </select>
+    </div>
+ 
+<!-- x -->
+    <!-- <div class=" m-3">
+      <p>X</p>
+      <select name="x" id="x">
+         {{x | safe}}
+      </select>
+    </div> -->
+    
+    <!-- y -->
+    <div class=" m-3">
+     <p>Dado</p>
+     <select name="y" id="y"> 
+        {{y | safe}}
+     </select>
+    </div>
+    
+    <button id="BSub" name="BSub">Gerar grafico</button>
+    </form>
+
+    </section>
+     
+    <img src="{{grafico | safe}}" width="450px" height="100%">
+
 </body>
 </html>

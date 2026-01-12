@@ -11,9 +11,24 @@ app = Flask(__name__)
 
 ficheiro = "datasets/utilizadores.dat"
 
-@app.route("/area_pessoal")
+@app.route("/area_pessoal",methods=["GET", "POST"])
 def area_pessoal():
-    return render_template("area_pessoal.html")
+    global Data, header
+    fileName=confirmar()   
+    print('file name ',fileName) 
+    with open(fileName, newline='', encoding='utf-8') as csvfile:
+        Reade = csv.reader(csvfile, delimiter=',', quotechar='"')
+        global Data, header
+        header = next(Reade)  # Skip header
+        Data = list(Reade) 
+    
+    grafico = filmsByGenreChart(header, Data)
+    y=''
+    x=''
+    for a in header:
+        y+=f'<option value="{a}">{a}</option>'
+        x+=f'<option value="{a}">{a}</option>'
+    return render_template("area_pessoal.html", grafico=grafico,y=y,x=x)
 
 def guardar_utilizador(username, email, password): 
     f = open(ficheiro, "a", encoding="utf-8") 
