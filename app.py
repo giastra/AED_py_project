@@ -60,66 +60,93 @@ def login():
         return redirect("/area_pessoal")
     else:
         return render_template("index.html", msg="Username ou password incorretos.")
-        
-        
+    
+
 fileName='./datasets/imdb_top_250_movies.csv'
-
-with open(fileName, newline='', encoding='utf-8') as csvfile:
-        Reade = csv.reader(csvfile, delimiter=',', quotechar='"')
-        global Data, header
-        header = next(Reade)  # Skip header
-        Data = list(Reade) 
-        
-#  ----------------------------------------------------------
-print(header)
-#  ----------------------------------------------------------
-
-
 def filmsByGenreChart(header, Data):
-    items = []              # LISTA de generos
-    Count = []              # LISTA de contador de filmes para cada genero
+    items = []              
+    Count = []              
     
+    if request.method=='POST':
+        IPy = request.form.get('y')
+        IPx = request.form.get('x')
+        IPg = request.form.get('category')
+        print('y ', IPy)
+        print('x', IPx)
+        print('g ', IPg)
+        indexGenre = header.index(IPy)
+        for b in Data:      
+            lista = b[indexGenre].split(', ')  
     
-    indexGenre = header.index('Year')
-    for film in Data:      # Percorrer todos os filmes (agora 89 filmes)
-        genresFilm = film[indexGenre].split(', ')  # Um filme pode ter vários géneros
-    
-        for genre in genresFilm:    # percorre todos os generos de UM DETERMINADO FILME 
-            if genre in items:
-                pos=items.index(genre) 
-                Count[pos]+= 1
-            else:
-                items.append(genre)
-                Count.append(1)
+            for XD in lista: 
+                if XD in items:
+                    pos=items.index(XD) 
+                    Count[pos]+= 1
+                else:
+                    items.append(XD)
+                    Count.append(1)
+        print(Count)
+        chart1Path = "./static/image/plot1.png"
+        plt.figure()
+        font1 = {'family':'serif','color':'blue','size':20}
+        if IPg == 'pizza':
+            myExplode = []
+            for i in range (len(items)):
+                myExplode.append(0.1)
 
-    print(Count)
-    chart1Path = "./static/image/plot1.png"
-    plt.figure()
+            ypoints = (Count)
+            
+            plt.pie(ypoints, 
+                    labels=items, 
+                    shadow=True,
+                    explode = myExplode,
+                    autopct='%1.1f%%')   # Atributo para evidenciar valores percentuais e respetiva formatação
+                
+            plt.title(f'{IPy}', fontdict= font1, loc = "center")   # loc = left, center, right
+            plt.savefig(chart1Path)
+            plt.close()
 
-    myExplode = []
-    for i in range (len(items)):
-        myExplode.append(0.1)
+        if IPg == 'bar':
+            plt.xlabel(IPy)
+            plt.bar(items,Count)
+            plt.title(f'{IPy}', fontdict= font1, loc = "center")
+            plt.tight_layout()
+            plt.savefig(chart1Path)
+            plt.close()
 
-    ypoints = (Count)
-    plt.pie(ypoints, 
-            labels=items, 
-            shadow=True,
-            explode = myExplode,
-            autopct='%1.1f%%')   # Atributo para evidenciar valores percentuais e respetiva formatação
-          
+        if IPg == 'hodBar':
+            plt.ylabel(IPy)
+            plt.barh(items,Count)
+            plt.title(f'{IPy}', fontdict= font1, loc = "center")
+            plt.tight_layout()
+            plt.savefig(chart1Path)
+            plt.close()
+        return chart1Path
 
-    font1 = {'family':'serif','color':'blue','size':20}
-    plt.title("Films by Genre", fontdict= font1, loc = "center")   # loc = left, center, right
 
-   
-    plt.tight_layout()
-    plt.savefig(chart1Path)
-    plt.close()
-    return chart1Path
+def confirmar():
+    arcaive = request.form.get('arcaive')
+    if arcaive == 'fs':
+        fileName='./datasets/fantasy_series.csv'
+    if arcaive == 'IMDB250':
+        fileName='./datasets/imdb_top_250_movies.csv'
+    if arcaive == 'IMDBVG':
+        fileName='./datasets/imdb-videogames.csv'
+    else:
+        fileName='./datasets/imdb_top_250_movies.csv'
+    return fileName
 
 @app.route("/",methods=["GET", "POST"])
 def inicio():
     global Data, header
+    fileName=confirmar()   
+    print('file name ',fileName) 
+    with open(fileName, newline='', encoding='utf-8') as csvfile:
+        Reade = csv.reader(csvfile, delimiter=',', quotechar='"')
+        global Data, header
+        header = next(Reade)  # Skip header
+        Data = list(Reade) 
+    
     grafico = filmsByGenreChart(header, Data)
     y=''
     x=''
