@@ -104,7 +104,14 @@
     
 
     <!-- seleção de info do grafico -->
+      <!-- <select name="arcaive" id="arcaive">
+        <option value="fs">Fantasy series</option>
+        <option value="IMDB250">IMDB top 250</option>
+        <option value="IMDBVG">IMDB Video Games</option>
+      </select> -->
+    
     <section id="select">
+    <form id="graficoForm" method="POST">
     
       <!-- tipo de grafico -->
       tipo de grafico
@@ -117,22 +124,23 @@
     </div>
  
 <!-- x -->
-    <div class=" m-3">
+    <!-- <div class=" m-3">
       <p>X</p>
       <select name="x" id="x">
          {{x | safe}}
       </select>
-    </div>
+    </div> -->
     
     <!-- y -->
     <div class=" m-3">
-     <p>Y</p>
+     <p>Dado</p>
      <select name="y" id="y">
         {{y | safe}}
      </select>
     </div>
     
     <button id="BSub" name="BSub">Gerar grafico</button>
+    </form>
 
     </section>
      
