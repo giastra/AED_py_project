@@ -5,7 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Area Pessoal</title>
 </head>
-<body>
+<body>  
+    <p><b>slecionar o aquivo</b></p>
+    <p>arquivo atualmente selecionado:</p>
+    <p>{{arcaive|safe}}</p>
+
+    <form method="post" >
+      <select name="arcaive" id="arcaive">
+        {{escrita | safe}}
+      </select>
+       <button>Selecionar</button> 
+     </form>
+   <form action="/data" method="get">
+        <button>Continuar</button>
+   </form>
+
+   <p>Selecione um arquivo para adicionar</p>
+   <form method="POST" action="/upload" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <input type="submit" value="Enviar">
+    </form>
     
 </body>
 </html>

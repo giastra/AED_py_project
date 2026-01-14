@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h2 class="mb-4 mt-3 ms-2">Grafico</h2>
+    
+<!-- seleção de info do grafico --> 
+    <form id="graficoForm" method="POST">
+
+    <section id="select" name="select">
+    
+      <!-- tipo de grafico -->
+      tipo de grafico
+    <div class="m-3">
+     <select name="category" id="category">
+        <option value="pizza">pizza</option>
+        <option value="bar">bar</option>
+        <option value="hodBar">horizontal Bar</option>
+     </select>
+    </div>
+ 
+<!-- x -->
+    <!-- <div class=" m-3">
+      <p>X</p>
+      <select name="x" id="x">
+         {{x | safe}}
+      </select>
+    </div> -->
+    
+    <!-- y -->
+    <div class=" m-3">
+     <p>Dado</p>
+     <select name="y" id="y"> 
+        {{y | safe}}
+     </select>
+    </div>
+    
+    <button id="BSub" name="BSub">Gerar grafico</button>
+    </form>
+    <form action="/area_pessoal" method="get">
+        <button>voltar</button>
+   </form>
+    </section>
+     
+    <img src="{{grafico | safe}}" width="450px" height="100%">
+</body>
+</html>
