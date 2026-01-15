@@ -40,6 +40,7 @@ def verificar_login(username, password):
     f.close()
     return False
 
+
 # pg de registro
 @app.route("/registar", methods=["POST"])
 def registar():
@@ -50,6 +51,7 @@ def registar():
     guardar_utilizador(username, email, password)
 
     return redirect("/area_pessoal")
+
 
 # pg de login
 @app.route("/login", methods=["POST"])
@@ -161,7 +163,6 @@ def inicio():
 
 # area pessoal
 arcaive=''
-
 @app.route("/area_pessoal",methods=["GET", "POST"])
 def area_pessoal():
    escrita=''
@@ -183,18 +184,21 @@ def area_pessoal():
 
    return render_template("area_pessoal.html",escrita=escrita,arcaive=arcaive)
 
+
 # uploude de arquivos
 UPLOAD_FOLDER = 'datasets'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
 # Extensões permitidas
 ALLOWED_EXTENSIONS = {'csv'}
-
 def allowed_file(filename):
     """Verifica se o arquivo tem uma extensão permitida."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+# o local para baixar o arquivo
 @app.route('/upload', methods=['POST'])
 def upload_file():
     voltar="<form action='/area_pessoal' method='get'><button>voltar</button></form>"
