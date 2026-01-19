@@ -45,6 +45,44 @@ def login():
     else:
         return render_template("index.html", msg="Username ou password incorretos.")
 
+#Area pessoal
+@app.route("/area_pessoal", methods=["GET", "POST"])
+def area_pessoal():
+    global arcaive
+    if 'arcaive' not in globals():
+        arcaive = ""
+
+    datasetsList = sorted(glob('datasets/*.csv'))
+    escrita = [os.path.basename(nome).replace('.csv', '') for nome in datasetsList]
+
+    atributos = []
+    num_linhas=0
+    num_atributos = 0
+
+    if request.method == 'POST':
+        arcaive = request.form.get('arcaive')
+
+    if arcaive:
+        caminho = os.path.join('datasets', f"{arcaive}.csv")
+
+        if os.path.exists(caminho):
+            with open(caminho, newline='', encoding='utf-8') as f:
+                reader = csv.reader(f, delimiter=",")
+                List = list(reader) 
+
+                if len(List) > 0:    
+                    header = List[0]
+
+                    for i in header:   
+                        atributos.append(i)
+
+            num_atributos = len(atributos)
+            num_linhas = len(List)-1
+
+    return render_template("area_pessoal.html",escrita=escrita,arcaive=arcaive,atributos=atributos,num_atributos=num_atributos,num_linhas=num_linhas)
+
+
+
 
 
 #Gráficos
@@ -149,15 +187,6 @@ def upload_file():
     return redirect(url_for('area_pessoal'))
 
 #Remover Arquivos
-
-@app.route("/area_pessoal", methods=["GET", "POST"])
-def area_pessoal():
-    global arcaive
-    datasetsList = sorted(glob('datasets/*.csv'))
-    escrita = [os.path.basename(nome).replace('.csv', '') for nome in datasetsList]
-    if request.method == 'POST':
-        arcaive = request.form.get('arcaive')
-    return render_template("area_pessoal.html", escrita=escrita, arcaive=arcaive)
 
 def remover_dataset(nome):
     caminho = os.path.join('datasets', f"{nome}.csv")
