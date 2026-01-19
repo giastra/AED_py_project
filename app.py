@@ -83,8 +83,6 @@ def area_pessoal():
 
 
 
-
-
 #Gráficos
 
 @app.route("/data", methods=["GET", "POST"])
