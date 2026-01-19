@@ -43,7 +43,7 @@ def login():
     if verificar_login(username, password):
         return redirect("/area_pessoal")
     else:
-        return render_template("index.html", msg="Username ou password incorretos.")
+        return render_template("index.html",)
 
 #Area pessoal
 @app.route("/area_pessoal", methods=["GET", "POST"])
