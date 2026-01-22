@@ -108,9 +108,17 @@ def confirmar():
     if request.method == 'POST':
         color=request.form.get('color')
         width=(request.form.get('width'))
-        if width != '':
-            width = float(width)    
-        grafico = GenGrafico(header, Data, color,width)
+        w=request.form.get('w')
+        h=request.form.get('h')
+        grid=request.form.get('grid')
+        print(grid)
+        if width != '' :
+            width = float(width) 
+        if w != '':
+            w=int(w)
+        if h != '':
+            h=int(h)   
+        grafico = GenGrafico(header, Data, color,width,w,h,grid)
     if grafico == "":
         return render_template("grafico.html", y=y, x=x)
     else:
@@ -118,8 +126,16 @@ def confirmar():
 
 items = []
 Count = []
-def GenGrafico(header, Data, color='black', width='0'):
+def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
     global Count,items
+    items = []
+    Count = []
+    if width=='':
+        width=float(1)
+    if w=='':
+        w=float(5)
+    if h == '':
+        h=float(5)
     if request.method == 'POST':
         IPy = request.form.get('y')
         IPx = request.form.get('x')
@@ -137,11 +153,13 @@ def GenGrafico(header, Data, color='black', width='0'):
         print(items)
         print(Count)
         chart1Path = "./static/image/plot1.png"
-        plt.figure()
+        plt.figure(figsize=(w, h))
         font1 = {'family': 'serif', 'color': 'blue', 'size': 20}
+        if grid =='on':
+            plt.grid()
 
         if IPg == 'pizza':
-            explode = [0.1] * len(items)
+            explode = [width] * len(items)
             plt.pie(Count, labels=items, shadow=True, explode=explode, autopct='%1.1f%%')
             plt.title(f'{IPy}', fontdict=font1, loc="center")
             plt.savefig(chart1Path)
@@ -155,7 +173,7 @@ def GenGrafico(header, Data, color='black', width='0'):
                     )
 
             plt.title(f'{IPy}', fontdict=font1, loc="center")
-            plt.tight_layout()
+      
             plt.savefig(chart1Path)
             plt.close()
 
@@ -167,7 +185,7 @@ def GenGrafico(header, Data, color='black', width='0'):
                      height=width,
                      )
             plt.title(f'{IPy}', fontdict=font1, loc="center")
-            plt.tight_layout()
+      
             plt.savefig(chart1Path)
             plt.close()
 
@@ -179,7 +197,19 @@ def GenGrafico(header, Data, color='black', width='0'):
                      color=color,
                      )
             plt.title(f'{IPy}', fontdict=font1, loc="center")
-            plt.tight_layout()
+        
+            plt.savefig(chart1Path)
+            plt.close()
+
+        if IPg == 'hist':
+            coisa=Count.append(1)
+            plt.xlabel(IPy)
+            plt.hist(items, 
+                     coisa,
+                     color=color,
+                     )
+            plt.title(f'{IPy}', fontdict=font1, loc="center")
+            
             plt.savefig(chart1Path)
             plt.close()
         return chart1Path
