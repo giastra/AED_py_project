@@ -18,6 +18,7 @@ def guardar_utilizador(username, email, password):
     with open(ficheiro, "a", encoding="utf-8") as f:
         f.write(username + ";" + email + ";" + password + "\n")
 
+
 def verificar_login(username, password):
     if not os.path.exists(ficheiro):
         return False
@@ -28,6 +29,7 @@ def verificar_login(username, password):
                 return True
     return False
 
+
 @app.route("/registar", methods=["POST"])
 def registar():
     username = request.form["username"]
@@ -35,6 +37,7 @@ def registar():
     password = request.form["password"]
     guardar_utilizador(username, email, password)
     return redirect("/area_pessoal")
+
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -46,12 +49,11 @@ def login():
         return render_template("index.html", msg="Username ou password incorretos.")
 
 
-
 #Gráficos
-
+grafico=''
 @app.route("/data", methods=["GET", "POST"])
 def confirmar():
-    global arcaive
+    global arcaive, grafico
     if not arcaive:
         return redirect("/area_pessoal")
     fileName = f"./datasets/{arcaive}.csv"
@@ -67,17 +69,21 @@ def confirmar():
     for a in header:
         y += f'<option value="{a}">{a}</option>'
         x += f'<option value="{a}">{a}</option>'
-    grafico = GenGrafico(header, Data)
+    if request.method == 'POST':
+        color=request.form.get('color')
+        width=(request.form.get('width'))
+        if width != '':
+            width = float(width)    
+        grafico = GenGrafico(header, Data, color,width)
     if grafico == "":
         return render_template("grafico.html", y=y, x=x)
     else:
         return render_template("grafico.html", grafico=grafico, y=y, x=x)
 
-
-
-def GenGrafico(header, Data):
-    items = []
-    Count = []
+items = []
+Count = []
+def GenGrafico(header, Data, color='black', width='0'):
+    global Count,items
     if request.method == 'POST':
         IPy = request.form.get('y')
         IPx = request.form.get('x')
@@ -92,25 +98,50 @@ def GenGrafico(header, Data):
                 else:
                     items.append(XD)
                     Count.append(1)
+        print(items)
+        print(Count)
         chart1Path = "./static/image/plot1.png"
         plt.figure()
         font1 = {'family': 'serif', 'color': 'blue', 'size': 20}
+
         if IPg == 'pizza':
             explode = [0.1] * len(items)
             plt.pie(Count, labels=items, shadow=True, explode=explode, autopct='%1.1f%%')
             plt.title(f'{IPy}', fontdict=font1, loc="center")
             plt.savefig(chart1Path)
             plt.close()
+
         if IPg == 'bar':
             plt.xlabel(IPy)
-            plt.bar(items, Count)
+            plt.bar(items,Count,
+                    color=color,
+                    width=width,
+                    )
+
             plt.title(f'{IPy}', fontdict=font1, loc="center")
             plt.tight_layout()
             plt.savefig(chart1Path)
             plt.close()
+
         if IPg == 'hodBar':
             plt.ylabel(IPy)
-            plt.barh(items, Count)
+            plt.barh(items, 
+                     Count,
+                     color=color,
+                     height=width,
+                     )
+            plt.title(f'{IPy}', fontdict=font1, loc="center")
+            plt.tight_layout()
+            plt.savefig(chart1Path)
+            plt.close()
+
+        if IPg == 'stairs':
+            coisa=Count.append(1)
+            plt.ylabel(IPy)
+            plt.stairs(items, 
+                     coisa,
+                     color=color,
+                     )
             plt.title(f'{IPy}', fontdict=font1, loc="center")
             plt.tight_layout()
             plt.savefig(chart1Path)
@@ -118,9 +149,11 @@ def GenGrafico(header, Data):
         return chart1Path
     return ""
 
+
 @app.route("/", methods=["GET", "POST"])
 def inicio():
     return render_template("index.html")
+
 
 #Upload de Arquivos
 
@@ -129,8 +162,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'csv'}
 
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -147,6 +182,7 @@ def upload_file():
         file.save(filepath)
 
     return redirect(url_for('area_pessoal'))
+
 
 #Remover Arquivos
 
@@ -172,7 +208,6 @@ def remover():
     if nome:
         remover_dataset(nome)
     return redirect("/area_pessoal")
-
 
 
 if __name__ == '__main__':
