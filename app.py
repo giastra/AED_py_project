@@ -6,11 +6,12 @@ import matplotlib.pyplot as plt
 import os
 import csv
 from glob import glob
+import shutil
 
 app = Flask(__name__)
 ficheiro = "datasets/utilizadores.dat"
 arcaive = ""
-
+username =""
 
 #Login
 
@@ -20,6 +21,7 @@ def guardar_utilizador(username, email, password):
 
 
 def verificar_login(username, password):
+    
     if not os.path.exists(ficheiro):
         return False
     with open(ficheiro, "r", encoding="utf-8") as f:
@@ -32,15 +34,32 @@ def verificar_login(username, password):
 
 @app.route("/registar", methods=["POST"])
 def registar():
+    global username
     username = request.form["username"]
     email = request.form["email"]
     password = request.form["password"]
-    guardar_utilizador(username, email, password)
-    return redirect("/area_pessoal")
+    lista=[]
+    with open(ficheiro, "r", encoding="utf-8") as f:
+        for linha in f:
+            dados = linha.strip().split(";")
+            lista+=dados
+            print(lista)
+        if lista.count(username) != 0 or lista.count(email) != 0:
+            return "<p>Usuario e/ou email ja cadastrados esolher outro</p><a href='/'><button>voltar</button></a>"
+        
+        else:
+            guardar_utilizador(username, email, password)
+            os.mkdir(f'./Users/{username}')
+            datasetsList = sorted(glob('datasets/*.csv'))
+            for origem in datasetsList:
+                escrita = os.path.basename(origem)
+                shutil.copy(origem, f'./Users/{username}/{escrita}')
+            return redirect("/area_pessoal")
 
 
 @app.route("/login", methods=["POST"])
 def login():
+    global username
     username = request.form["username"]
     password = request.form["password"]
     if verificar_login(username, password):
@@ -51,11 +70,11 @@ def login():
 #Area pessoal
 @app.route("/area_pessoal", methods=["GET", "POST"])
 def area_pessoal():
-    global arcaive
+    global arcaive,username
     if 'arcaive' not in globals():
         arcaive = ""
 
-    datasetsList = sorted(glob('datasets/*.csv'))
+    datasetsList = sorted(glob(f'./Users/{username}/*.csv'))
     escrita = [os.path.basename(nome).replace('.csv', '') for nome in datasetsList]
 
     atributos = []
@@ -89,10 +108,10 @@ def area_pessoal():
 grafico=''
 @app.route("/data", methods=["GET", "POST"])
 def confirmar():
-    global arcaive, grafico
+    global arcaive, grafico,username
     if not arcaive:
         return redirect("/area_pessoal")
-    fileName = f"./datasets/{arcaive}.csv"
+    fileName = f'./Users/{username}/{arcaive}.csv'
     if not os.path.exists(fileName):
         return redirect("/area_pessoal")
     y = ""
@@ -239,12 +258,15 @@ def upload_file():
         return redirect(url_for('area_pessoal'))
     
     file = request.files['file']
+    
 
     if file.filename == '':
         return redirect(url_for('area_pessoal'))
     
     if file and allowed_file(file.filename):
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        filepath = f'./Users/{username}/{file.filename}'
+        print('filepath ',filepath)
+        print('file',file)
         file.save(filepath)
 
     return redirect(url_for('area_pessoal'))
@@ -253,7 +275,8 @@ def upload_file():
 #Remover Arquivos
 
 def remover_dataset(nome):
-    caminho = os.path.join('datasets', f"{nome}.csv")
+    global username
+    caminho = f'./Users/{username}/{nome}.csv'
     if os.path.exists(caminho):
         os.remove(caminho)
         return True
