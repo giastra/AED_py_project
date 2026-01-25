@@ -12,16 +12,18 @@ app = Flask(__name__)
 ficheiro = "datasets/utilizadores.dat"
 arcaive = ""
 username =""
+adm=False
 
 #Login
 
 def guardar_utilizador(username, email, password):
     with open(ficheiro, "a", encoding="utf-8") as f:
-        f.write(username + ";" + email + ";" + password + "\n")
+        f.write(username + ";" + email + ";" + password + ";" + 0 + "\n")
 
 
 def verificar_login(username, password):
-    
+    global adm
+    print('1 ',adm)
     if not os.path.exists(ficheiro):
         return False
     with open(ficheiro, "r", encoding="utf-8") as f:
@@ -29,7 +31,11 @@ def verificar_login(username, password):
             dados = linha.strip().split(";")
             if dados[0] == username and dados[2] == password:
                 return True
-    return False
+        if dados[3] == '1':
+            adm = True
+        else:
+            adm = False
+        return False
 
 
 @app.route("/registar", methods=["POST"])
@@ -43,7 +49,6 @@ def registar():
         for linha in f:
             dados = linha.strip().split(";")
             lista+=dados
-            print(lista)
         if lista.count(username) != 0 or lista.count(email) != 0:
             return "<p>Usuario e/ou email ja cadastrados esolher outro</p><a href='/'><button>voltar</button></a>"
         
@@ -70,11 +75,16 @@ def login():
 #Area pessoal
 @app.route("/area_pessoal", methods=["GET", "POST"])
 def area_pessoal():
-    global arcaive,username
+    global arcaive,username,adm
     if 'arcaive' not in globals():
         arcaive = ""
-
-    datasetsList = sorted(glob(f'./Users/{username}/*.csv'))
+    if adm == True:
+        datasetsList = sorted(glob(f'./datasets/*.csv'))
+        titulo='Modo Adiministrador'
+    else:
+        datasetsList = sorted(glob(f'./Users/{username}/*.csv'))
+        titulo=f'Área do {username}'
+    
     escrita = [os.path.basename(nome).replace('.csv', '') for nome in datasetsList]
 
     atributos = []
@@ -101,17 +111,21 @@ def area_pessoal():
             num_atributos = len(atributos)
             num_linhas = len(List)-1
 
-    return render_template("area_pessoal.html",escrita=escrita,arcaive=arcaive,atributos=atributos,num_atributos=num_atributos,num_linhas=num_linhas)
+    return render_template("area_pessoal.html",escrita=escrita,arcaive=arcaive,atributos=atributos,num_atributos=num_atributos,num_linhas=num_linhas,titulo=titulo)
 
 
 #Gráficos
 grafico=''
 @app.route("/data", methods=["GET", "POST"])
 def confirmar():
-    global arcaive, grafico,username
+    global arcaive, grafico,username,adm
     if not arcaive:
         return redirect("/area_pessoal")
-    fileName = f'./Users/{username}/{arcaive}.csv'
+    if adm == True:
+        fileName = f'./datasets/{arcaive}.csv'
+    else:
+        fileName = f'./Users/{username}/{arcaive}.csv'
+    
     if not os.path.exists(fileName):
         return redirect("/area_pessoal")
     y = ""
@@ -237,6 +251,8 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
 
 @app.route("/", methods=["GET", "POST"])
 def inicio():
+    global adm
+    adm = False
     return render_template("index.html")
 
 
@@ -254,6 +270,7 @@ def allowed_file(filename):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    global adm,username
     if 'file' not in request.files:
         return redirect(url_for('area_pessoal'))
     
@@ -264,10 +281,18 @@ def upload_file():
         return redirect(url_for('area_pessoal'))
     
     if file and allowed_file(file.filename):
-        filepath = f'./Users/{username}/{file.filename}'
-        print('filepath ',filepath)
-        print('file',file)
-        file.save(filepath)
+        if adm == True:
+            filepath = f'./datasets/{file.filename}'
+            file.save(filepath)
+            lista = (sorted(glob('./Users/*')))
+            for dd in lista:
+                cc=dd+f'/{file.filename}'
+                print('cc ',cc)
+                file.save(cc)  
+            
+        else:    
+            filepath = f'./Users/{username}/{file.filename}'
+            file.save(filepath)
 
     return redirect(url_for('area_pessoal'))
 
@@ -275,11 +300,25 @@ def upload_file():
 #Remover Arquivos
 
 def remover_dataset(nome):
-    global username
-    caminho = f'./Users/{username}/{nome}.csv'
-    if os.path.exists(caminho):
-        os.remove(caminho)
-        return True
+    global username,adm
+    if adm == True:
+        caminho = f'./datasets/{nome}.csv'
+        if os.path.exists(caminho):
+            os.remove(caminho)
+        lista = (sorted(glob('./Users/*')))
+        for dd in lista:
+            cc=dd+f'/{nome}.csv'
+            print('cc ',cc)
+            if os.path.exists(cc):
+                os.remove(cc)
+        return True  
+    else:    
+        caminho = f'./Users/{username}/{nome}.csv'
+        if os.path.exists(caminho):
+            os.remove(caminho)
+            return True
+    
+    
     return False
 
 @app.route("/remover", methods=["POST"])
