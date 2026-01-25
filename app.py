@@ -24,7 +24,6 @@ def guardar_utilizador(username, email, password):
 
 def verificar_login(username, password):
     global adm
-    print('1 ',adm)
     if not os.path.exists(ficheiro):
         return False
     
@@ -146,7 +145,7 @@ def confirmar():
         w=request.form.get('w')
         h=request.form.get('h')
         grid=request.form.get('grid')
-        print(grid)
+       
         if width != '' :
             width = float(width) 
         if w != '':
@@ -165,17 +164,31 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
     global Count,items
     items = []
     Count = []
-    if width=='':
-        width=float(1)
-    if w=='':
-        w=float(5)
+
+    # Valores por defeito
+    if width == '':
+        width = 0.8   # largura da barra (menor = mais espaço)
+    else:
+        width = float(width)
+
+    if w == '':
+        w = 6
+    else:
+        w = float(w)
+
     if h == '':
-        h=float(5)
+        h = 5
+    else:
+        h = float(h)
+
     if request.method == 'POST':
         IPy = request.form.get('y')
         IPx = request.form.get('x')
         IPg = request.form.get('category')
+
         indexGenre = header.index(IPy)
+
+         # Contagem dos itens
         for b in Data:
             lista = b[indexGenre].split(', ')
             for XD in lista:
@@ -185,14 +198,16 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
                 else:
                     items.append(XD)
                     Count.append(1)
-        print(items)
-        print(Count)
+        
         chart1Path = "./static/image/plot1.png"
+
         plt.figure(figsize=(w, h))
         font1 = {'family': 'serif', 'color': 'blue', 'size': 20}
+
         if grid =='on':
             plt.grid()
 
+        # PIZZA
         if IPg == 'pizza':
             explode = [width] * len(items)
             plt.pie(Count, labels=items, shadow=True, explode=explode, autopct='%1.1f%%')
@@ -200,6 +215,7 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
             plt.savefig(chart1Path)
             plt.close()
 
+        # BARRA VERTICAL
         if IPg == 'bar':
             plt.xlabel(IPy)
             plt.bar(items,Count,
@@ -212,6 +228,7 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
             plt.savefig(chart1Path)
             plt.close()
 
+        # BARRA HORIZONTAL
         if IPg == 'hodBar':
             plt.ylabel(IPy)
             plt.barh(items, 
@@ -224,6 +241,7 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
             plt.savefig(chart1Path)
             plt.close()
 
+        # STAIRS
         if IPg == 'stairs':
             coisa=Count.append(1)
             plt.ylabel(IPy)
@@ -236,6 +254,7 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
             plt.savefig(chart1Path)
             plt.close()
 
+        # HISTOGRAMA
         if IPg == 'hist':
             coisa=Count.append(1)
             plt.xlabel(IPy)
@@ -247,7 +266,9 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
             
             plt.savefig(chart1Path)
             plt.close()
+
         return chart1Path
+    
     return ""
 
 

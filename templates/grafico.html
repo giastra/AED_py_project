@@ -19,28 +19,57 @@
                 <h4 class="mb-3">Gerar Gráfico</h4>
 
                 <form action="/data" method="POST">
-                  <select name="category" id="category" class="form-select">
-                   <option value="pizza">Pizza</option>
-                   <option value="bar">Barra Vertical</option>
-                   <option value="hodBar">Barra Horizontal</option>
-                   <option value="stairs">escada</option>
-                   <option value="hist">hist</option>
-                  </select>
+                  <!-- Tipo de gráfico -->
+                    <div class="mb-3">
+                    <label for="category" class="form-label">Tipo de gráfico</label>
+                    <select name="category" id="category" class="form-select">
+                        <option value="pizza">Pizza</option>
+                        <option value="bar">Barra Vertical</option>
+                        <option value="hodBar">Barra Horizontal</option>
+                        <option value="stairs">Escada</option>
+                        <option value="hist">Histograma</option>
+                    </select>
+                    </div>
 
-                  <select name="y" id="y" class="form-select mb-3 mt-3">
-                    {{ y | safe }}
-                  </select>
+                  <!-- Y -->
+                    <div class="mb-3">
+                    <label for="y" class="form-label">Coluna Y</label>
+                    <select name="y" id="y" class="form-select">
+                        {{ y | safe }}
+                    </select>
+                    </div>
 
-                  <p>Customização</p>
-                    <input type="color" name="color">
+                  <!-- Customização -->
+                  <h5 class="mt-4">Customização</h5>
 
-                    <input type="text" name="width" placeholder="largura da barra/ pizza">
+                  <div class="row g-3 mt-1">
+                    
+                    <div class="col-6">
+                        <label class="form-label">Cor</label>
+                        <input type="color" name="color" class="form-control form-control-color">
+                    </div>
 
-                    <input type="number" name="w" placeholder="largura">
+                    <div class="col-6">
+                        <label class="form-label">Largura da barra/pizza</label>
+                        <input type="text" name="width" class="form-control" placeholder="ex: 0.8">
+                    </div>
 
-                    <input type="number" name="h" placeholder="altura">
+                    <div class="col-6">
+                        <label class="form-label">Largura</label>
+                        <input type="number" name="w" class="form-control" placeholder="px">
+                    </div>
 
-                    <input type="checkbox" name="grid">grid
+                    <div class="col-6">
+                        <label class="form-label">Altura</label>
+                        <input type="number" name="h" class="form-control" placeholder="px">
+                    </div>
+
+                    <div class="col-12 form-check mt-2">
+                        <input type="checkbox" name="grid" class="form-check-input" id="grid">
+                        <label for="grid" class="form-check-label">Mostrar grid</label>
+                    </div>
+
+                  </div>
 
                   <button type="submit" class="btn btn-primary w-100 py-3 mb-3">Gerar gráfico</button>
                 </form>
