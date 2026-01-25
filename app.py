@@ -208,9 +208,9 @@ def GenGrafico(header, Data, color='black', width='', w='', h='', grid=''):
         if grid == 'on':
             plt.grid()
 
-        # -------------------------
-        #       PIZZA
-        # -------------------------
+
+        # PIZZA
+ 
         if IPg == 'pizza':
             explode = [0.05] * len(items)
             plt.pie(Count, labels=items, shadow=True, explode=explode, autopct='%1.1f%%')
@@ -218,32 +218,29 @@ def GenGrafico(header, Data, color='black', width='', w='', h='', grid=''):
             plt.savefig(chart1Path)
             plt.close()
 
-        # -------------------------
-        #       BARRA VERTICAL
-        # -------------------------
+        # BARRA VERTICAL
+
         if IPg == 'bar':
             plt.bar(items, Count, color=color, width=width)
             plt.xticks(rotation=45, ha='right')
-            plt.margins(x=0.1)  # <<< Espaçamento extra entre barras
+            plt.margins(x=0.1)
             plt.title(f'{IPy}', fontdict=font1)
             plt.tight_layout()
             plt.savefig(chart1Path)
             plt.close()
 
-        # -------------------------
-        #       BARRA HORIZONTAL
-        # -------------------------
+        # BARRA HORIZONTAL
+
         if IPg == 'hodBar':
             plt.barh(items, Count, color=color, height=width)
-            plt.margins(y=0.1)  # <<< Espaçamento extra entre barras horizontais
+            plt.margins(y=0.1) 
             plt.title(f'{IPy}', fontdict=font1)
             plt.tight_layout()
             plt.savefig(chart1Path)
             plt.close()
 
-        # -------------------------
-        #       STAIRS
-        # -------------------------
+        # STAIRS
+
         if IPg == 'stairs':
             valores = Count + [Count[-1]]
             plt.stairs(valores, items + [" "], color=color)
@@ -253,9 +250,9 @@ def GenGrafico(header, Data, color='black', width='', w='', h='', grid=''):
             plt.savefig(chart1Path)
             plt.close()
 
-        # -------------------------
-        #       HISTOGRAMA
-        # -------------------------
+
+        # HISTOGRAMA
+     
         if IPg == 'hist':
             plt.hist(items, weights=Count, color=color)
             plt.xticks(rotation=45, ha='right')
