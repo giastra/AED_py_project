@@ -9,7 +9,7 @@ from glob import glob
 import shutil
 
 app = Flask(__name__)
-ficheiro = "datasets/utilizadores.dat"
+ficheiro = "datasets/utilizadores.bin"
 arcaive = ""
 username =""
 adm=False
@@ -17,8 +17,9 @@ adm=False
 #Login
 
 def guardar_utilizador(username, email, password):
-    with open(ficheiro, "a", encoding="utf-8") as f:
-        f.write(username + ";" + email + ";" + password + ";" + 0 + "\n")
+    linha = f"{username};{email};{password};0\n"
+    with open(ficheiro, "ab") as f:  # 'ab' = append binary
+        f.write(linha.encode("utf-8"))
 
 
 def verificar_login(username, password):
@@ -26,9 +27,10 @@ def verificar_login(username, password):
     print('1 ',adm)
     if not os.path.exists(ficheiro):
         return False
-    with open(ficheiro, "r", encoding="utf-8") as f:
+    
+    with open(ficheiro, "rb") as f: # 'rb' = read binary
         for linha in f:
-            dados = linha.strip().split(";")
+            dados = linha.decode("utf-8").strip().split(";")
             if dados[0] == username and dados[2] == password:
                 return True
         if dados[3] == '1':
