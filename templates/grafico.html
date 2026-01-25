@@ -18,35 +18,38 @@
 
                 <h4 class="mb-3">Gerar Gráfico</h4>
 
-                <section id="graficoForm" method="POST">
+                <form action="/data" method="POST">
+                  <select name="category" id="category" class="form-select">
+                   <option value="pizza">Pizza</option>
+                   <option value="bar">Barra Vertical</option>
+                   <option value="hodBar">Barra Horizontal</option>
+                   <option value="stairs">escada</option>
+                   <option value="hist">hist</option>
+                  </select>
 
-                    <!-- Tipo de gráfico -->
-                    <div class="mb-3">
-                        <label for="category" class="form-label fw-semibold">Tipo de gráfico</label>
-                        <select name="category" id="category" class="form-select">
-                            <option value="pizza">Pizza</option>
-                            <option value="bar">Barra Vertical</option>
-                            <option value="hodBar">Barra Horizontal</option>
-                        </select>
-                    </div>
+                  <select name="y" id="y" class="form-select mb-3 mt-3">
+                    {{ y | safe }}
+                  </select>
 
-                    <!-- Y -->
-                    <div class="mb-3">
-                        <label for="y" class="form-label fw-semibold">Dado</label>
-                        <select name="y" id="y" class="form-select">
-                            {{ y | safe }}
-                        </select>
-                    </div>
-                    <div class="row ">
-                      <button id="BSub" name="BSub" class="btn btn-primary w-100 py-3 col m-3">
-                          Gerar gráfico
-                      </button>
+                  <p>Customização</p>
+                    <input type="color" name="color">
+
+                    <input type="text" name="width" placeholder="largura da barra/ pizza">
+
+                    <input type="number" name="w" placeholder="largura">
+
+                    <input type="number" name="h" placeholder="altura">
+
+                    <input type="checkbox" name="grid">grid
+
+                  <button type="submit" class="btn btn-primary w-100 py-3 mb-3">Gerar gráfico</button>
+                </form>
+
+                <div class="col">
                     <form action="/area_pessoal" method="get">
-                        <button>voltar</button>
+                        <button class="btn btn-secondary w-100 py-3">Voltar</button>
                     </form>
-                    </div>
-                </section>
-            
+                </div>
             </div>
         </div>
 
@@ -58,6 +61,6 @@
 
         
     </div>
-
+    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
 </body>
 </html>
