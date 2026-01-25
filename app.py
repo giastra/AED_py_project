@@ -161,95 +161,112 @@ def confirmar():
 
 items = []
 Count = []
-def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
-    global Count,items
+def GenGrafico(header, Data, color='black', width='', w='', h='', grid=''):
+    global Count, items
     items = []
     Count = []
-    if width=='':
-        width=float(1)
-    if w=='':
-        w=float(5)
+
+    # Valores por defeito
+    if width == '':
+        width = 0.8   # largura da barra (menor = mais espaço)
+    else:
+        width = float(width)
+
+    if w == '':
+        w = 6
+    else:
+        w = float(w)
+
     if h == '':
-        h=float(5)
+        h = 5
+    else:
+        h = float(h)
+
     if request.method == 'POST':
         IPy = request.form.get('y')
         IPx = request.form.get('x')
         IPg = request.form.get('category')
+
         indexGenre = header.index(IPy)
-        for b in Data:
-            lista = b[indexGenre].split(', ')
-            for XD in lista:
-                if XD in items:
-                    pos = items.index(XD)
+
+        # Contagem dos itens
+        for linha in Data:
+            valores = linha[indexGenre].split(', ')
+            for v in valores:
+                if v in items:
+                    pos = items.index(v)
                     Count[pos] += 1
                 else:
-                    items.append(XD)
+                    items.append(v)
                     Count.append(1)
-        print(items)
-        print(Count)
+
         chart1Path = "./static/image/plot1.png"
+
         plt.figure(figsize=(w, h))
         font1 = {'family': 'serif', 'color': 'blue', 'size': 20}
-        if grid =='on':
+
+        if grid == 'on':
             plt.grid()
 
+        # -------------------------
+        #       PIZZA
+        # -------------------------
         if IPg == 'pizza':
-            explode = [width] * len(items)
+            explode = [0.05] * len(items)
             plt.pie(Count, labels=items, shadow=True, explode=explode, autopct='%1.1f%%')
-            plt.title(f'{IPy}', fontdict=font1, loc="center")
+            plt.title(f'{IPy}', fontdict=font1)
             plt.savefig(chart1Path)
             plt.close()
 
+        # -------------------------
+        #       BARRA VERTICAL
+        # -------------------------
         if IPg == 'bar':
-            plt.xlabel(IPy)
-            plt.bar(items,Count,
-                    color=color,
-                    width=width,
-                    )
-
-            plt.title(f'{IPy}', fontdict=font1, loc="center")
-      
+            plt.bar(items, Count, color=color, width=width)
+            plt.xticks(rotation=45, ha='right')
+            plt.margins(x=0.1)  # <<< Espaçamento extra entre barras
+            plt.title(f'{IPy}', fontdict=font1)
+            plt.tight_layout()
             plt.savefig(chart1Path)
             plt.close()
 
+        # -------------------------
+        #       BARRA HORIZONTAL
+        # -------------------------
         if IPg == 'hodBar':
-            plt.ylabel(IPy)
-            plt.barh(items, 
-                     Count,
-                     color=color,
-                     height=width,
-                     )
-            plt.title(f'{IPy}', fontdict=font1, loc="center")
-      
+            plt.barh(items, Count, color=color, height=width)
+            plt.margins(y=0.1)  # <<< Espaçamento extra entre barras horizontais
+            plt.title(f'{IPy}', fontdict=font1)
+            plt.tight_layout()
             plt.savefig(chart1Path)
             plt.close()
 
+        # -------------------------
+        #       STAIRS
+        # -------------------------
         if IPg == 'stairs':
-            coisa=Count.append(1)
-            plt.ylabel(IPy)
-            plt.stairs(items, 
-                     coisa,
-                     color=color,
-                     )
-            plt.title(f'{IPy}', fontdict=font1, loc="center")
-        
+            valores = Count + [Count[-1]]
+            plt.stairs(valores, items + [" "], color=color)
+            plt.xticks(rotation=45, ha='right')
+            plt.title(f'{IPy}', fontdict=font1)
+            plt.tight_layout()
             plt.savefig(chart1Path)
             plt.close()
 
+        # -------------------------
+        #       HISTOGRAMA
+        # -------------------------
         if IPg == 'hist':
-            coisa=Count.append(1)
-            plt.xlabel(IPy)
-            plt.hist(items, 
-                     coisa,
-                     color=color,
-                     )
-            plt.title(f'{IPy}', fontdict=font1, loc="center")
-            
+            plt.hist(items, weights=Count, color=color)
+            plt.xticks(rotation=45, ha='right')
+            plt.title(f'{IPy}', fontdict=font1)
+            plt.tight_layout()
             plt.savefig(chart1Path)
             plt.close()
-        return chart1Path
-    return ""
 
+        return chart1Path
+
+    return ""
 
 @app.route("/", methods=["GET", "POST"])
 def inicio():
