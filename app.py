@@ -24,19 +24,22 @@ def guardar_utilizador(username, email, password):
 
 def verificar_login(username, password):
     global adm
+    print('estou aqui')
     if not os.path.exists(ficheiro):
         return False
     
     with open(ficheiro, "rb") as f: # 'rb' = read binary
         for linha in f:
             dados = linha.decode("utf-8").strip().split(";")
+            print(dados)
             if dados[0] == username and dados[2] == password:
+                if dados[3] == 't':
+                    adm = True
+                else:
+                    adm = False
                 return True
-        if dados[3] == '1':
-            adm = True
-        else:
-            adm = False
-        return False
+    
+    return False
 
 
 @app.route("/registar", methods=["POST"])
@@ -77,6 +80,7 @@ def login():
 @app.route("/area_pessoal", methods=["GET", "POST"])
 def area_pessoal():
     global arcaive,username,adm
+    print(adm)
     if 'arcaive' not in globals():
         arcaive = ""
     if adm == True:
@@ -120,6 +124,7 @@ grafico=''
 @app.route("/data", methods=["GET", "POST"])
 def confirmar():
     global arcaive, grafico,username,adm
+    grafico=''
     if not arcaive:
         return redirect("/area_pessoal")
     if adm == True:
@@ -222,6 +227,7 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
                     color=color,
                     width=width,
                     )
+            plt.xticks(rotation=45)
 
             plt.title(f'{IPy}', fontdict=font1, loc="center")
       
@@ -236,6 +242,8 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
                      color=color,
                      height=width,
                      )
+            plt.yticks(rotation=45)
+
             plt.title(f'{IPy}', fontdict=font1, loc="center")
       
             plt.savefig(chart1Path)
@@ -249,6 +257,8 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
                      coisa,
                      color=color,
                      )
+            plt.xticks(rotation=45)
+
             plt.title(f'{IPy}', fontdict=font1, loc="center")
         
             plt.savefig(chart1Path)
@@ -262,6 +272,8 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
                      coisa,
                      color=color,
                      )
+            plt.xticks(rotation=45)
+
             plt.title(f'{IPy}', fontdict=font1, loc="center")
             
             plt.savefig(chart1Path)
@@ -270,6 +282,7 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
         return chart1Path
     
     return ""
+
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -281,11 +294,8 @@ def inicio():
 
 #Upload de Arquivos
 
-UPLOAD_FOLDER = 'datasets'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = {'csv'}
 
+ALLOWED_EXTENSIONS = {'csv'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
