@@ -120,6 +120,7 @@ grafico=''
 @app.route("/data", methods=["GET", "POST"])
 def confirmar():
     global arcaive, grafico,username,adm
+    grafico=''
     if not arcaive:
         return redirect("/area_pessoal")
     if adm == True:
