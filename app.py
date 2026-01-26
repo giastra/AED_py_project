@@ -223,6 +223,7 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
                     color=color,
                     width=width,
                     )
+            plt.xticks(rotation=45)
 
             plt.title(f'{IPy}', fontdict=font1, loc="center")
       
@@ -237,6 +238,8 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
                      color=color,
                      height=width,
                      )
+            plt.yticks(rotation=45)
+
             plt.title(f'{IPy}', fontdict=font1, loc="center")
       
             plt.savefig(chart1Path)
@@ -250,6 +253,8 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
                      coisa,
                      color=color,
                      )
+            plt.xticks(rotation=45)
+
             plt.title(f'{IPy}', fontdict=font1, loc="center")
         
             plt.savefig(chart1Path)
@@ -263,6 +268,8 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
                      coisa,
                      color=color,
                      )
+            plt.xticks(rotation=45)
+
             plt.title(f'{IPy}', fontdict=font1, loc="center")
             
             plt.savefig(chart1Path)
@@ -271,6 +278,7 @@ def GenGrafico(header, Data, color='black', width='',w='',h='',grid=''):
         return chart1Path
     
     return ""
+
 
 
 @app.route("/", methods=["GET", "POST"])
