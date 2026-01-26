@@ -24,16 +24,14 @@ def guardar_utilizador(username, email, password):
 
 def verificar_login(username, password):
     global adm
-    print('estou aqui')
     if not os.path.exists(ficheiro):
         return False
     
     with open(ficheiro, "rb") as f: # 'rb' = read binary
         for linha in f:
             dados = linha.decode("utf-8").strip().split(";")
-            print(dados)
             if dados[0] == username and dados[2] == password:
-                if dados[3] == 't':
+                if dados[3] == '1':
                     adm = True
                 else:
                     adm = False
@@ -80,7 +78,6 @@ def login():
 @app.route("/area_pessoal", methods=["GET", "POST"])
 def area_pessoal():
     global arcaive,username,adm
-    print(adm)
     if 'arcaive' not in globals():
         arcaive = ""
     if adm == True:
